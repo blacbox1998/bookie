@@ -1,63 +1,59 @@
 <template>
 
-    <div class="flex align-content-evenly flex-wrap">
-        <div class="w-full flex align-items-center  justify-content-start flex-column">
-            <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="xlarge" shape="circle" />
-            <h2>{{ 'Marko Mitrovic' }}</h2>
+    <DataView></DataView>
+    <Button icon="pi pi-arrow-right" @click="sidebarVisible = true" />
+    <Sidebar v-model:visible="sidebarVisible" position="right"  class="w-full md:w-15rem lg:w-30rem">
+        <div class="flex align-content-evenly flex-wrap">
+            <div class="w-full flex align-items-center  justify-content-start flex-column">
+                <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="xlarge" shape="circle" />
+                <h2>{{ 'Marko Mitrovic' }}</h2>
+            </div>
         </div>
-    </div>
-    <Panel>
-        <template #header>
-            <div class="flex-wrap flex align-items-stretch w-full">
-                <div class="flex flex-column w-full border-round">
-                    <div class="w-full flex align-items-center  justify-content-start">
-                        <label class="text-3xl font-bold">{{ currentMonth }}</label>
-                        <div class="ml-auto">
-                            <i id="arrow" class="text-5xl text-indigo-500  pi pi-angle-left hover:surface-200 mr-2"
-                                @click="previousWeek"></i>
-                            <i id="arrow" class="ml-2 text-5xl text-indigo-500 pi pi-angle-right hover:surface-200"
-                                @click="nextWeek"></i>
+        <Panel>
+            <template #header>
+                <div class="flex-wrap flex align-items-stretch w-full">
+                    <div class="flex flex-column w-full border-round">
+                        <div class="w-full flex align-items-center  justify-content-start">
+                            <label class="text-3xl font-bold">{{ currentMonth }}</label>
+                            <div class="ml-auto">
+                                <i id="arrow" class="text-5xl text-indigo-500  pi pi-angle-left hover:surface-200 mr-2"
+                                    @click="previousWeek"></i>
+                                <i id="arrow" class="ml-2 text-5xl text-indigo-500 pi pi-angle-right hover:surface-200"
+                                    @click="nextWeek"></i>
+                            </div>
                         </div>
-                    </div>
 
 
-                    <div class="flex-wrap flex align-items-stretch align-items-center">
-                        <div v-for="date in listOfDates" @click="dateSelected(date)" :style="{ width: '13%'}"
-                            class="ml-auto align-items-center  flex mt-3 mb-3 date hover:surface-200 font-bold flex align-self-stretch border-round flex-column mr-auto">
-                            <div class="text-lg font-bold text-center border-round p-2">{{ date.dayName }}</div>
-                            <div class="text-lg font-bold text-center border-round ">{{ date.dayInMonth }}</div>
+                        <div class="flex-wrap flex align-items-stretch align-items-center">
+                            <div v-for="date in listOfDates" @click="dateSelected(date)" :style="{ width: '13%' }"
+                                class="ml-auto align-items-center  flex mt-3 mb-3 date hover:surface-200 font-bold flex align-self-stretch border-round flex-column mr-auto">
+                                <div class="text-lg font-bold text-center border-round p-2">{{ date.dayName }}</div>
+                                <div class="text-lg font-bold text-center border-round ">{{ date.dayInMonth }}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </template>
-        <div class="inline flex flex-wrap align-items-center justify-content-start w-full">
-            <div v-for="interval in timeIntervals"
-                class="mt-3 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
-                <div class="text-center border-round border-1 p-2"
-                    v-bind:class="(interval.disabled ? 'surface-200 text-gray-400' : '')">{{ interval.label }}</div>
-            </div>
-
-        </div>
-        <!-- <div class="flex align-items-center justify-content-start mt-3">
-
-            <div v-for="interval in secondRow"
-            class=" w-full date hover:surface-200 font-bold flex align-items-center justify-content-center border-round flex-column ml-5">
-            <div class="block font-bold text-center border-round border-2 p-2">{{ interval.label }}</div>
+            </template>
+            <div class="inline flex flex-wrap align-items-center justify-content-start w-full">
+                <div v-for="interval in timeIntervals"
+                    class="mt-3 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
+                    <div class="text-center border-round border-1 p-2"
+                        v-bind:class="(interval.disabled ? 'surface-200 text-gray-400' : '')">{{ interval.label }}</div>
+                </div>
             </div>
 
-        </div> -->
 
-
-    </Panel>
-    <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'"></Button>
-
+        </Panel>
+        <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'"></Button>
+    </Sidebar>
 </template>
 <script setup>
 import { ref } from 'vue'
 
 const listOfDates = ref(getListOfDatesInAWeek(new Date()));
 const currentMonth = ref(getMonthName(listOfDates.value[6].value));
+
+const sidebarVisible = ref(false)
 
 const selectedDate = ref();
 const selectedInterval = ref();
