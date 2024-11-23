@@ -1,11 +1,11 @@
 <template>
-  <div class="temp justify-content-stretch">
     <Calendar class="temp" />
-  </div>
+
 
 
 </template>
 <script setup lang="ts">
+ //@ts-ignore
 import Calendar from './components/Calendar.vue'
 </script>
 

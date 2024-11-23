@@ -1,58 +1,60 @@
 <template>
 
-
-    <van-collapse v-model="activeNames" class="w-full border-round temp">
-        <van-collapse-item title="Marko Mitrovic" name="1" class="w-full">
-            <primevue-avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="xlarge"
-                shape="circle" />
+    <div class="flex align-content-evenly flex-wrap">
+        <div class="w-full flex align-items-center  justify-content-start flex-column">
+            <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="xlarge" shape="circle" />
             <h2>{{ 'Marko Mitrovic' }}</h2>
-            <primevue-panel class="w-full">
-                <template #header>
-                    <div class="flex-wrap flex align-items-stretch w-full">
-                        <div class="flex flex-column w-full border-round">
-                            <div class="w-full flex align-items-center  justify-content-start">
-                                <label class="text-3xl font-bold">{{ currentMonth }}</label>
-                                <div class="ml-auto">
-                                    <i id="arrow"
-                                        class="text-5xl text-indigo-500  pi pi-angle-left hover:surface-200 mr-2"
-                                        @click="previousWeek"></i>
-                                    <i id="arrow"
-                                        class="ml-2 text-5xl text-indigo-500 pi pi-angle-right hover:surface-200"
-                                        @click="nextWeek"></i>
-                                </div>
-                            </div>
-
-
-                            <div class="flex-wrap flex align-items-stretch align-items-center">
-                                <div v-for="date in listOfDates" @click="dateSelected(date)" :style="{ width: '13%' }"
-                                    class="ml-auto align-items-center  flex mt-3 mb-3 date hover:surface-200 font-bold flex align-self-stretch border-round flex-column mr-auto">
-                                    <div class="text-lg font-bold text-center border-round p-2">{{ date.dayName
-                                        }}</div>
-                                    <div class="text-lg font-bold text-center border-round ">{{ date.dayInMonth
-                                        }}</div>
-                                </div>
-                            </div>
+        </div>
+    </div>
+    <Panel>
+        <template #header>
+            <div class="flex-wrap flex align-items-stretch w-full">
+                <div class="flex flex-column w-full border-round">
+                    <div class="w-full flex align-items-center  justify-content-start">
+                        <label class="text-3xl font-bold">{{ currentMonth }}</label>
+                        <div class="ml-auto">
+                            <i id="arrow" class="text-5xl text-indigo-500  pi pi-angle-left hover:surface-200 mr-2"
+                                @click="previousWeek"></i>
+                            <i id="arrow" class="ml-2 text-5xl text-indigo-500 pi pi-angle-right hover:surface-200"
+                                @click="nextWeek"></i>
                         </div>
                     </div>
-                </template>
-                <div class="flex flex-wrap">
-                    <div v-for="interval in timeIntervals"
-                        class="mt-3 hover:surface-200  align-items-center justify-content-center border-round flex-column ml-3">
-                        <div class="text-center border-round border-1 p-2 w-4rem" @click="showDialogCustom"
-                            v-bind:class="(interval.disabled ? 'surface-200 text-gray-400' : '')">{{
-                                interval.label }}
+
+
+                    <div class="flex-wrap flex align-items-stretch align-items-center">
+                        <div v-for="date in listOfDates" @click="dateSelected(date)" :style="{ width: '13%'}"
+                            class="ml-auto align-items-center  flex mt-3 mb-3 date hover:surface-200 font-bold flex align-self-stretch border-round flex-column mr-auto">
+                            <div class="text-lg font-bold text-center border-round p-2">{{ date.dayName }}</div>
+                            <div class="text-lg font-bold text-center border-round ">{{ date.dayInMonth }}</div>
                         </div>
                     </div>
                 </div>
-            </primevue-panel>
-            <button class="w-full border-round bg-indigo-500" :label="'Zakazi'"></button>
-        </van-collapse-item>
-    </van-collapse>
+            </div>
+        </template>
+        <div class="inline flex flex-wrap align-items-center justify-content-start w-full">
+            <div v-for="interval in timeIntervals"
+                class="mt-3 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
+                <div class="text-center border-round border-1 p-2"
+                    v-bind:class="(interval.disabled ? 'surface-200 text-gray-400' : '')">{{ interval.label }}</div>
+            </div>
+
+        </div>
+        <!-- <div class="flex align-items-center justify-content-start mt-3">
+
+            <div v-for="interval in secondRow"
+            class=" w-full date hover:surface-200 font-bold flex align-items-center justify-content-center border-round flex-column ml-5">
+            <div class="block font-bold text-center border-round border-2 p-2">{{ interval.label }}</div>
+            </div>
+
+        </div> -->
+
+
+    </Panel>
+    <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'"></Button>
 
 </template>
-<script setup lang="ts">
-import { ref } from 'vue';
-import { showConfirmDialog, showDialog } from 'vant';
+<script setup>
+import { ref } from 'vue'
 
 const listOfDates = ref(getListOfDatesInAWeek(new Date()));
 const currentMonth = ref(getMonthName(listOfDates.value[6].value));
@@ -78,20 +80,6 @@ const timeIntervals = ref([
     { label: '15:30' },
     { label: '16:00' },
 ]);
-
-const activeNames = ref(['Marko Mitrovic'])
-
-function showDialogCustom() {
-
-    showDialog({
-        title: 'Title',
-        message: 'The code is written for people to see and can be run on a machine.',
-        theme: 'round-button',
-    }).then(() => {
-        // on close
-    });
-
-}
 
 function dateSelected(date) {
     selectedDate.value = date
@@ -152,16 +140,12 @@ function firstLetterToUpper(text) {
 }
 
 </script>
-<style scoped>
+<style>
 i:hover {
     cursor: pointer;
 }
 
 .date:hover {
     cursor: pointer;
-}
-
-.temp {
-    width: 100% !important
 }
 </style>
