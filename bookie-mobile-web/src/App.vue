@@ -1,81 +1,87 @@
 <template>
-  <div class="flex justify-content-center">
-    <DataView :value="workers">
-      <template #list="slotProps">
-        <div class="align-content-center">
-          <div class="mb-6 block flex-wrap " v-for="(item, index) in slotProps.items" :key="index">
-            <div class="block flex flex-col sm:flex-row sm:items-center gap-3"
-              :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-              <div class="md:w-40 relative">
-                <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="xlarge" shape="circle" />
-              </div>
-              <div class="md:w-40 relative">
-                <div class="absolute bg-black/70 rounded-border" style="left: 4px; top: 4px">
+  <div class="w-full p-0 m-0">
+    <div class="flex justify-items-center align-items-center flex-wrap p-fluid">
+      <div class="col">
+        <div class="ml-auto mr-auto field max-w-30rem align-content-center align-items-center w-full">
+          <label class="text-gray-500">{{ 'Izaberite uslugu' }}</label>
+          <Dropdown class="w-full max-w-30rem" :options="services" v-model="selectedService" showClear></Dropdown>
+        </div>
+      </div>
+    </div>
+    <div v-if="selectedService" class="mt-6 flex ml-auto mr-auto max-w-30rem w-full justify-content-center">
+      <DataView :value="workers">
+        <template #list="slotProps">
+          <div class="align-content-center">
+            <div class="mb-6 block flex-wrap " v-for="(item, index) in slotProps.items" :key="index">
+              <div class="block border-gray-300 flex flex-col sm:flex-row sm:items-center gap-3 pt-4" :style="{borderTop:'solid'}"
+                :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                <div class="md:w-50 relative">
+                  <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="large"
+                    shape="circle" />
                 </div>
-              </div>
-              <div class="flex flex-wrap flex-col md:flex-row justify-between md:items-center flex-1 gap-4">
-                <div class="flex flex-row md:flex-col justify-between items-start gap-2">
-                  <div class="w-12rem">
-                    <span class="font-medium text-surface-500 dark:text-surface-400 text-sm">{{ item.category }}</span>
-                    <div class="text-lg font-medium mt-2">{{ item.name }}</div>
+                <div class="md:w-50 relative">
+                  <div class="absolute bg-black/70 rounded-border" style="left: 4px; top: 4px">
                   </div>
-                  <div class="bg-surface-100 p-1" style="border-radius: 30px">
-                    <div class="bg-surface-0 flex items-center gap-2 justify-center py-1 px-2"
-                      style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
-                      <span class="text-surface-900 font-medium text-sm">{{ item.rating }}</span>
-                      <i class="pi pi-star-fill text-yellow-500"></i>
+                </div>
+                <div class="flex flex-wrap flex-col md:flex-row justify-between md:items-center flex-1 gap-2">
+                  <div class="flex flex-row md:flex-col justify-between items-start gap-2">
+                    <div class="w-8rem">
+                      <div class="font-medium mt-2">{{ item.name }}</div>
+                      <span class="font-semibold">${{ item.price }}</span>
+                    </div>
+                    <div class="bg-surface-100 p-1" style="border-radius: 30px">
+                      <div class="bg-surface-0 flex items-center gap-2 justify-center py-1 px-2"
+                        style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="flex flex-col md:items-end gap-6">
-                  <span class="text-xl mt-2 font-semibold">${{ item.price }}</span>
-                  <div class="flex  md:flex-row gap-2">
-                    <Button icon="pi pi-shopping-cart" label="Book now" @click="sidebarVisible = true"
-                      class="flex-auto md:flex-initial whitespace-nowrap"></Button>
+                  <div class="flex flex-col gap-2">
+                    <div class="flex  md:flex-row gap-2">
+                      <Button icon="pi pi-shopping-cart" label="Book" @click="sidebarVisible = true"
+                        class="h-3rem p-button-sm flex-auto md:flex-initial whitespace-nowrap"></Button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </template>
-    </DataView>
-  </div>
-  <Sidebar v-model:visible="sidebarVisible" position="right" class="w-full md:w-15rem lg:w-30rem">
-    <div class="flex align-content-evenly flex-wrap">
-      <div class="w-full flex align-items-center  justify-content-start flex-column">
-        <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="xlarge" shape="circle" />
-        <h2>{{ 'Marko Mitrovic' }}</h2>
-      </div>
+        </template>
+      </DataView>
     </div>
-    <Panel>
+  </div>
+  <Sidebar v-model:visible="sidebarVisible" position="right" class="w-full max-w-30rem">
+      <div class="w-full flex p-fluid flex-column formgrid grid">
+          <label class="ml-auto mr-auto text-2xl font-bold">{{ 'Marko Mitrovic123' }}</label>
+      </div>
+    <Panel class="mt-3">
       <template #header>
         <div class="flex-wrap flex align-items-stretch w-full">
           <div class="flex flex-column w-full border-round">
             <div class="w-full flex align-items-center  justify-content-start">
-              <label class="text-3xl font-bold">{{ currentMonth }}</label>
+              <label class="font-bold">{{ currentMonth }}</label>
+              <label class="font-bold ml-3">{{ currentYear }}</label>
               <div class="ml-auto">
-                <i id="arrow" class="text-5xl text-indigo-500  pi pi-angle-left hover:surface-200 mr-2"
+                <i id="arrow" class="text-3xl text-indigo-500  pi pi-angle-left hover:surface-200 mr-2"
                   @click="previousWeek"></i>
-                <i id="arrow" class="ml-2 text-5xl text-indigo-500 pi pi-angle-right hover:surface-200"
+                <i id="arrow" class="ml-2 text-3xl text-indigo-500 pi pi-angle-right hover:surface-200"
                   @click="nextWeek"></i>
               </div>
             </div>
 
 
-            <div class="flex-wrap flex align-items-stretch align-items-center">
+            <div class="flex-wrap flex align-items-stretch align-items-center mt-2">
               <div v-for="date in listOfDates" @click="dateSelected(date)" :style="{ width: '13%' }"
-                class="ml-auto align-items-center  flex mt-3 mb-3 date hover:surface-200 font-bold flex align-self-stretch border-round flex-column mr-auto">
-                <div class="text-lg font-bold text-center border-round p-2">{{ date.dayName }}</div>
-                <div class="text-lg font-bold text-center border-round ">{{ date.dayInMonth }}</div>
+                class="ml-auto align-items-center  flex mt-1 mb-1 date hover:surface-200 font-bold flex align-self-stretch border-round flex-column mr-auto">
+                <div class="font-bold text-center border-round p-2">{{ date.dayName }}</div>
+                <div class="font-bold text-center border-round ">{{ date.dayInMonth }}</div>
               </div>
             </div>
           </div>
         </div>
       </template>
-      <div class="inline flex flex-wrap align-items-center justify-content-start w-full">
+      <div class="inline flex flex-wrap align-items-center  justify-content-start w-full">
         <div v-for="interval in timeIntervals"
-          class="mt-3 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
+          class="mt-2 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
           <div class="text-center border-round border-1 p-2"
             v-bind:class="(interval.disabled ? 'surface-200 text-gray-400' : '')">{{ interval.label }}</div>
         </div>
@@ -83,10 +89,21 @@
 
 
     </Panel>
-    <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'"></Button>
+    <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'" @click="confirmDialogVisible=true"></Button>
   </Sidebar>
 
-
+<Dialog v-model:visible="confirmDialogVisible" modal="true" class="w-full max-w-30rem">
+  <template #header>
+        <div class="inline-flex items-center justify-center gap-2">
+            <span class="font-bold whitespace-nowrap">{{'Potvrdi termin'}}</span>
+        </div>
+    </template>
+  {{ 'Potvrda termina' }}
+  <template #footer>
+    <Button label="Otkaži" text severity="secondary"  class="text-indigo-500" @click="confirmDialogVisible = false" />
+    <Button label="Potvrdi" text severity="secondary" class="text-indigo-500" @click="confirmDialogVisible = false" />
+  </template>
+</Dialog>
 
 </template>
 <script setup>
@@ -95,6 +112,7 @@ import { WorkersService } from './services/WorkersService.js'
 
 const listOfDates = ref(getListOfDatesInAWeek(new Date()));
 const currentMonth = ref(getMonthName(listOfDates.value[6].value));
+const currentYear = ref(getYear(listOfDates.value[6].value));
 
 const sidebarVisible = ref(false)
 
@@ -122,6 +140,17 @@ const timeIntervals = ref([
 
 const workers = ref(WorkersService.getWorkersData());
 
+const services = [
+  'Šišanje',
+  'Freziranje',
+  'Fejd',
+  'Brijanje'
+];
+
+const confirmDialogVisible = ref(false)
+
+const selectedService = ref();
+
 function dateSelected(date) {
   selectedDate.value = date
   console.log('Date selected', selectedDate.value)
@@ -131,11 +160,15 @@ function getMonthName(date) {
   return firstLetterToUpper(date.toLocaleString('sr-Latn-RS', { month: 'long' }))
 }
 
+function getYear(date) {
+  return date.getFullYear();
+}
+
 function nextWeek() {
   var targetDate = new Date(listOfDates.value[6].value.getTime() + 1000 * 60 * 60 * 26);
-  console.log(targetDate)
   listOfDates.value = getListOfDatesInAWeek(targetDate);
   currentMonth.value = getMonthName(listOfDates.value[6].value);
+  currentYear.value = getYear(listOfDates.value[6].value) ;
 }
 
 function previousWeek() {
@@ -143,6 +176,7 @@ function previousWeek() {
   console.log(targetDate)
   listOfDates.value = getListOfDatesInAWeek(targetDate);
   currentMonth.value = getMonthName(listOfDates.value[6].value);
+  currentYear.value = getYear(listOfDates.value[6].value) ;
 }
 
 function getListOfDatesInAWeek(date) {
@@ -181,3 +215,8 @@ function firstLetterToUpper(text) {
 }
 
 </script>
+<style scoped>
+body {
+  margin: 0;
+}
+</style>

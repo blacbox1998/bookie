@@ -16,7 +16,7 @@ export const WorkersService = {
             {
                 id: '1001',
                 code: 'nvklal433',
-                name: 'Milan ilic',
+                name: 'Dusan ilic',
                 description: 'Product Description',
                 image: 'black-watch.jpg',
                 price: 72,
