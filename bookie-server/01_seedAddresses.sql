@@ -1,0 +1,2 @@
+insert into bookie.address(id,email,phonenumber,country,city,street,streetnumber,latitude,longitude)
+values(1, 'blabla@gmail.com', '2133213312','RS', 'Beograd', 'Ulica neznanih junaka', '23A',44.729173,20.428603 );

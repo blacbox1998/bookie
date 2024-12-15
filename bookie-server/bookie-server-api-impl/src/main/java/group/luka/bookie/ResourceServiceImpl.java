@@ -1,8 +1,10 @@
 package group.luka.bookie;
 
+import group.luka.bookie.mapper.ResourceMapper;
 import group.luka.bookie.model.ReservationType;
 import group.luka.bookie.model.Resource;
 import group.luka.bookie.model.ResourceOptionWrapper;
+import group.luka.bookie.repo.ResourceRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,28 +13,27 @@ import java.util.List;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
+
+    private static final ResourceMapper mapper = ResourceMapper.INSTANCE;
+    private final ResourceRepository repository;
+
+    public ResourceServiceImpl(ResourceRepository repository) {
+        this.repository = repository;
+    }
+
     @Override
     public List<ResourceOptionWrapper> findOptionsByWorkingUnitAndType(Integer workingUnit, ReservationType type) {
-        List<ResourceOptionWrapper> result = new ArrayList<>();
+        List<ResourceOptionWrapper> resourceOptionWrappers = new ArrayList<>();
 
-        ResourceOptionWrapper wrapper = new ResourceOptionWrapper();
-        Resource resource = new Resource();
-        resource.setName("Marko Dusic");
-        resource.setUsername("marko1");
+        List<Resource> resources = mapper.entityToModel(repository.findAll());
+        for (Resource resource : resources) {
+            ResourceOptionWrapper wrapper = new ResourceOptionWrapper();
+            wrapper.setResource(resource);
+            wrapper.setPrice(new BigDecimal("21"));
+            resourceOptionWrappers.add(wrapper);
+        }
 
-        wrapper.setResource(resource);
-        wrapper.setPrice(new BigDecimal("23.5"));
-        result.add(wrapper);
-
-        ResourceOptionWrapper wrapper1 = new ResourceOptionWrapper();
-        Resource resource2 = new Resource();
-        resource2.setName("Vlatko Ilic");
-        resource2.setUsername("vlatkoI");
-        wrapper1.setResource(resource2);
-        wrapper1.setPrice(new BigDecimal("21.5"));
-        result.add(wrapper1);
-
-        return result;
+        return resourceOptionWrappers;
     }
 
     @Override

@@ -10,6 +10,7 @@ public class Address {
     private Integer id;
     private String email;
     private String phoneNumber;
+    private String country;
     private String city;
     private String street;
     private String streetNumber;

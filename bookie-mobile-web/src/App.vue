@@ -1,6 +1,7 @@
 <template>
+
   <div class="w-full p-0 m-0">
-    <div class="flex justify-items-center align-items-center flex-wrap p-fluid">
+    <div class="flex mt-8 justify-items-center align-items-center flex-wrap p-fluid">
       <div class="col">
         <div class="ml-auto mr-auto field max-w-30rem align-content-center align-items-center w-full">
           <label class="text-gray-500">{{ 'Izaberite uslugu' }}</label>
@@ -8,31 +9,27 @@
         </div>
       </div>
     </div>
-    <div class="mt-6 flex ml-auto mr-auto max-w-30rem w-full justify-content-center">
-      <DataView v-show="selectedService" :value="workers">
+    <div class="flex ml-auto mr-auto max-w-30rem w-full justify-content-center border-round-md">
+      <div class="card border-round-md">
+      <DataView v-show="selectedService" :value="workers" class="border-round-md">
         <template #list="slotProps">
-          <div class="align-content-center">
-            <div class="mb-6 block flex-wrap " v-for="(item, index) in slotProps.items" :key="index">
-              <div class="block border-gray-300 flex flex-col sm:flex-row sm:items-center gap-3 pt-4" :style="{borderTop:'solid'}"
-                :class="{ 'border-t border-surface-200 dark:border-surface-700': true }">
+          <div class="align-content-center border-round-md ">
+            <div class="mb-3 block flex-wrap " v-for="(item, index) in slotProps.items" :key="index">
+              <div class="block border-gray-300 flex flex-col sm:flex-row sm:items-center gap-3 pt-3 pl-4 pr-4" :style="{ borderTop:'solid'}"
+                :class="{ 'border-t border-surface-200 dark:border-surface-700': index!==0 }">
                 <div class="md:w-50 relative">
                   <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="large"
                     shape="circle" />
                 </div>
-                <div class="md:w-50 relative">
+                <div class="md:w-50 relative ">
                   <div class="absolute bg-black/70 rounded-border" style="left: 4px; top: 4px">
                   </div>
                 </div>
                 <div class="flex flex-wrap flex-col md:flex-row justify-between md:items-center flex-1 gap-2">
                   <div class="flex flex-row md:flex-col justify-between items-start gap-2">
-                    <div class="w-8rem">
+                    <div class="w-8rem ">
                       <div class="font-medium mt-2">{{ item.resource.name }}</div>
                       <span class="font-semibold">${{ item.price }}</span>
-                    </div>
-                    <div class="bg-surface-100 p-1" style="border-radius: 30px">
-                      <div class="bg-surface-0 flex items-center gap-2 justify-center py-1 px-2"
-                        style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
-                      </div>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2">
@@ -48,8 +45,9 @@
         </template>
       </DataView>
     </div>
+    </div>
   </div>
-  <Sidebar v-model:visible="sidebarVisible" position="right" class="w-full max-w-30rem">
+  <Sidebar v-model:visible="sidebarVisible" position="right" class="w-full max-w-30rem bg-gray-200">
       <div class="w-full flex p-fluid flex-column formgrid grid">
           <label class="ml-auto mr-auto text-2xl font-bold">{{ selectedResource.name }}</label>
       </div>
@@ -104,6 +102,7 @@
     <Button label="Potvrdi" text severity="secondary" class="text-indigo-500" @click="confirmDialogVisible = false" />
   </template>
 </Dialog>
+
 
 </template>
 <script setup>

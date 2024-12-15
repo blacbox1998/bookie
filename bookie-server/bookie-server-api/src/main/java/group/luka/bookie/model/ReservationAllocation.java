@@ -6,7 +6,7 @@ import lombok.Data;
 public class ReservationAllocation {
 
     private Integer reservationId;
-    private Customer customer;
-    private Resource resource;
+    private Integer customer;
+    private Integer resource;
 
 }

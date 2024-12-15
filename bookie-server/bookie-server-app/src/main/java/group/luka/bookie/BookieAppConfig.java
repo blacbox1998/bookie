@@ -8,4 +8,5 @@ import org.springframework.context.annotation.Configuration;
         "group.luka.bookie"
 })
 public class BookieAppConfig {
+
 }
