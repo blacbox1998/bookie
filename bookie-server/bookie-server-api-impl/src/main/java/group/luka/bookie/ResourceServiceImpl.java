@@ -28,7 +28,7 @@ public class ResourceServiceImpl implements ResourceService {
         Resource resource2 = new Resource();
         resource2.setName("Vlatko Ilic");
         resource2.setUsername("vlatkoI");
-        wrapper1.setResource(resource);
+        wrapper1.setResource(resource2);
         wrapper1.setPrice(new BigDecimal("21.5"));
         result.add(wrapper1);
 

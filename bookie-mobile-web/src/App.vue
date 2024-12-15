@@ -37,7 +37,7 @@
                   </div>
                   <div class="flex flex-col gap-2">
                     <div class="flex  md:flex-row gap-2">
-                      <Button icon="pi pi-shopping-cart" label="Book" @click="sidebarVisible = true"
+                      <Button icon="pi pi-shopping-cart" label="Book" @click="showSidebar(item.resource)"
                         class="h-3rem p-button-sm flex-auto md:flex-initial whitespace-nowrap"></Button>
                     </div>
                   </div>
@@ -51,7 +51,7 @@
   </div>
   <Sidebar v-model:visible="sidebarVisible" position="right" class="w-full max-w-30rem">
       <div class="w-full flex p-fluid flex-column formgrid grid">
-          <label class="ml-auto mr-auto text-2xl font-bold">{{ 'Marko Mitrovic123' }}</label>
+          <label class="ml-auto mr-auto text-2xl font-bold">{{ selectedResource.name }}</label>
       </div>
     <Panel class="mt-3">
       <template #header>
@@ -80,10 +80,10 @@
         </div>
       </template>
       <div class="inline flex flex-wrap align-items-center  justify-content-start w-full">
-        <div v-for="interval in timeIntervals"
+        <div v-for="calendarItemAllocation in calendarItemAllocations"
           class="mt-2 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
           <div class="text-center border-round border-1 p-2"
-            v-bind:class="(interval.disabled ? 'surface-200 text-gray-400' : '')">{{ interval.label }}</div>
+            v-bind:class="(calendarItemAllocation.busy ? 'surface-200 text-gray-400' : '')">{{ useDateFormat(calendarItemAllocation.startedAt,'HH:mm') }}</div>
         </div>
       </div>
 
@@ -109,6 +109,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import axios from 'axios';
+import { useDateFormat } from '@vueuse/core';
 
 const listOfDates = ref(getListOfDatesInAWeek(new Date()));
 const currentMonth = ref(getMonthName(listOfDates.value[6].value));
@@ -118,26 +119,7 @@ const sidebarVisible = ref(false)
 
 const selectedDate = ref();
 const selectedInterval = ref();
-const timeIntervals = ref([
-  { label: '08:00' },
-  { label: '08:30', disabled: true },
-  { label: '09:00' },
-  { label: '09:30' },
-  { label: '10:00' },
-  { label: '10:30' },
-  { label: '11:00' },
-  { label: '11:30' },
-  { label: '12:00' },
-  { label: '12:30' },
-  { label: '13:00' },
-  { label: '13:30', disabled: true },
-  { label: '14:00' },
-  { label: '14:30' },
-  { label: '15:00' },
-  { label: '15:30' },
-  { label: '16:00' },
-]);
-
+const calendarItemAllocations = ref([])
 const workers = ref();
 
 const services = ref();
@@ -145,6 +127,7 @@ const services = ref();
 const confirmDialogVisible = ref(false)
 
 const selectedService = ref();
+const selectedResource = ref();
 
 watch(selectedService,async (newValue,oldValue)=>{
 
@@ -153,11 +136,31 @@ watch(selectedService,async (newValue,oldValue)=>{
     url: '/api/ResourceService/findOptionsByWorkingUnitAndType',
     data: {
       workingUnit: 1,
-      type: null
+      type: selectedService.value
     }
   });
   workers.value = response.data;
 });
+
+async function showSidebar(resource){
+  sidebarVisible.value = true
+  selectedResource.value = resource;
+  selectedDate.value = new Date();
+  selectedDate.value.setHours(0)
+  selectedDate.value.setMinutes(0);
+  selectedDate.value.setSeconds(0);
+  selectedDate.value.setMilliseconds(1);
+  const response = await axios({
+    method: 'post',
+    url: '/api/ResourceCalendarService/findResourceScheduleForDate',
+    data: {
+      date: selectedDate.value,
+      resource: 12,
+      reservationType: selectedService.value
+    }
+  });
+  calendarItemAllocations.value = response.data;
+}
 
 onMounted(async ()=>{
 
@@ -169,9 +172,20 @@ onMounted(async ()=>{
   services.value = response.data;
 })
 
-function dateSelected(date) {
+async function dateSelected(date) {
   selectedDate.value = date
-  console.log('Date selected', selectedDate.value)
+
+  const response = await axios({
+    method: 'post',
+    url: '/api/ResourceCalendarService/findResourceScheduleForDate',
+    data: {
+      date: selectedDate.value.value,
+      resource: 12,
+      reservationType: selectedService.value
+    }
+  });
+  calendarItemAllocations.value = response.data;
+
 }
 
 function getMonthName(date) {
