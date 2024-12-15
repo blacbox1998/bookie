@@ -29,12 +29,12 @@
                   <div class="flex flex-row md:flex-col justify-between items-start gap-2">
                     <div class="w-8rem ">
                       <div class="font-medium mt-2">{{ item.resource.name }}</div>
-                      <span class="font-semibold">${{ item.price }}</span>
+                      <span class="font-semibold">{{ item.price +'din'}}</span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2">
                     <div class="flex  md:flex-row gap-2">
-                      <Button icon="pi pi-shopping-cart" label="Book" @click="showSidebar(item.resource)"
+                      <Button icon="pi pi-calendar-clock" label="Book" @click="showSidebar(item.resource)"
                         class="h-3rem p-button-sm flex-auto md:flex-initial whitespace-nowrap"></Button>
                     </div>
                   </div>

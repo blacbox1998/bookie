@@ -1,12 +1,10 @@
 package group.luka.bookie.entity;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "resourcereservationtype")
@@ -17,11 +15,15 @@ public class ResourceReservationTypeEntity {
     @Id
     private Integer id;
 
-    @Column(name = "resource")
-    private Integer resource;
+    @ManyToOne
+    @JoinColumn(name = "resource")
+    private ResourceEntity resource;
 
     @Column(name = "reservationtype")
     private String reservationType;
+
+    @Column(name = "price")
+    private BigDecimal price;
 
 
 }

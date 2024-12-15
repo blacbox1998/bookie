@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 public class ResourceReservationType {
 
     private Integer id;
-    private Integer resource;
+    private Resource resource;
     private String reservationType;
     private BigDecimal price;
 
