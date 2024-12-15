@@ -4,7 +4,7 @@
       <div class="col">
         <div class="ml-auto mr-auto field max-w-30rem align-content-center align-items-center w-full">
           <label class="text-gray-500">{{ 'Izaberite uslugu' }}</label>
-          <Dropdown class="w-full max-w-30rem" :options="services" v-model="selectedService" showClear></Dropdown>
+          <Dropdown class="w-full max-w-30rem" :options="services" optionLabel="name" v-model="selectedService" showClear></Dropdown>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
                 <div class="flex flex-wrap flex-col md:flex-row justify-between md:items-center flex-1 gap-2">
                   <div class="flex flex-row md:flex-col justify-between items-start gap-2">
                     <div class="w-8rem">
-                      <div class="font-medium mt-2">{{ item.name }}</div>
+                      <div class="font-medium mt-2">{{ item.resource.name }}</div>
                       <span class="font-semibold">${{ item.price }}</span>
                     </div>
                     <div class="bg-surface-100 p-1" style="border-radius: 30px">
@@ -108,7 +108,6 @@
 </template>
 <script setup>
 import { onMounted, ref, watch } from 'vue';
-import { WorkersService } from './services/WorkersService.js'
 import axios from 'axios';
 
 const listOfDates = ref(getListOfDatesInAWeek(new Date()));
@@ -141,12 +140,7 @@ const timeIntervals = ref([
 
 const workers = ref();
 
-const services = [
-  'Šišanje',
-  'Freziranje',
-  'Fejd',
-  'Brijanje'
-];
+const services = ref();
 
 const confirmDialogVisible = ref(false)
 
@@ -156,15 +150,24 @@ watch(selectedService,async (newValue,oldValue)=>{
 
   const response = await axios({
     method: 'post',
-    url: '/api/ResourceService/findByWorkingUnit',
+    url: '/api/ResourceService/findOptionsByWorkingUnitAndType',
     data: {
-      workingUnit: 1
+      workingUnit: 1,
+      type: null
     }
   });
   workers.value = response.data;
-  console.log(workers.value)
-
 });
+
+onMounted(async ()=>{
+
+  const response = await axios({
+    method: 'post',
+    url: '/api/ReservationTypeService/findAll',
+    data: {}
+  });
+  services.value = response.data;
+})
 
 function dateSelected(date) {
   selectedDate.value = date
