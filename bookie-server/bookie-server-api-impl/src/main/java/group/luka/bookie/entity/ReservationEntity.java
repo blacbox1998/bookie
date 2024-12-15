@@ -15,6 +15,8 @@ import java.util.Date;
 public class ReservationEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservationId")
+    @SequenceGenerator(name="reservationId", sequenceName = "reservation_id_seq")
     private Integer id;
 
     @ManyToOne
@@ -25,12 +27,14 @@ public class ReservationEntity {
     @JoinColumn(name = "type")
     private ReservationTypeEntity type;
 
-    @Column(name = "reservationdatetime")
-    private Date reservationDateTime;
+    @Column(name = "customer")
+    private Integer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "allocation")
-    private ReservationAllocationEntity allocation;
+    @Column(name = "resource")
+    private Integer resource;
+
+    @Column(name = "datetime")
+    private Date dateTime;
 
     @Column(name = "statusmodifiedat")
     private Date statusModifiedAt;

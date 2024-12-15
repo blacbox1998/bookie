@@ -20,3 +20,6 @@ values(5,2,'barber',850);
 --feniranje
 insert into bookie.resourcereservationtype(id,resource,reservationtype,price)
 values(6,3,'fan', 650);
+
+insert into bookie.resourcereservationtype(id,resource,reservationtype,price)
+values(7,4,'fan', 200);

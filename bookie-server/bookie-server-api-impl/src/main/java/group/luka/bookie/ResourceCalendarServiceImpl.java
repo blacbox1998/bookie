@@ -1,7 +1,9 @@
 package group.luka.bookie;
 
+import group.luka.bookie.entity.ReservationEntity;
 import group.luka.bookie.model.CalendarItemAllocation;
 import group.luka.bookie.model.ReservationType;
+import group.luka.bookie.repo.ReservationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,25 +13,34 @@ import java.util.List;
 @Service
 public class ResourceCalendarServiceImpl implements ResourceCalendarService {
 
+    private final ReservationRepository repository;
+
+    public ResourceCalendarServiceImpl(ReservationRepository repository) {
+        this.repository = repository;
+    }
+
     @Override
     public List<CalendarItemAllocation> findResourceScheduleForDate(Date date, Integer resource, ReservationType reservationType) {
 
-        List<CalendarItemAllocation> result = new ArrayList<>();
-        List<Date> dates = generatePeriodsForDate(date, reservationType);
+        Date endDate = new Date(date.getTime() + 1000 * 60 * 60 * 24);
+        List<ReservationEntity> allAllocations = repository.findByResourceAndDateTimeBetween(resource, date, endDate);
 
-        boolean busy = false;
+        List<CalendarItemAllocation> result = new ArrayList<>();
+        List<Date> dates = generatePeriodsForDate(date);
+
         for (Date dateToCheck : dates) {
             CalendarItemAllocation calendarItemAllocation = new CalendarItemAllocation();
-            calendarItemAllocation.setBusy(busy);
-            busy = !busy;
             calendarItemAllocation.setStartedAt(dateToCheck);
+
+            Date intervalEnd = new Date(dateToCheck.getTime() + 1000L * 60 * reservationType.getDurationInMinutes());
+            calendarItemAllocation.setBusy(allAllocations.stream().anyMatch(allocation -> allocation.getDateTime().before(intervalEnd) && allocation.getDateTime().after(dateToCheck)));
             result.add(calendarItemAllocation);
         }
 
         return result;
     }
 
-    private List<Date> generatePeriodsForDate(Date date, ReservationType type) {
+    private List<Date> generatePeriodsForDate(Date date) {
         List<Date> dates = new ArrayList<>();
 
         //08:00
@@ -39,7 +50,7 @@ public class ResourceCalendarServiceImpl implements ResourceCalendarService {
         Date tempDate = new Date(workingDayStart.getTime());
         while (tempDate.before(workingDayEnd)) {
             dates.add(tempDate);
-            tempDate = new Date(tempDate.getTime() + 1000L * 60 * type.getDurationInMinutes());
+            tempDate = new Date(tempDate.getTime() + 1000L * 60 * 15);
         }
 
         return dates;

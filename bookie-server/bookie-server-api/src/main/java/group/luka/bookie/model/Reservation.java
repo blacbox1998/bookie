@@ -10,8 +10,9 @@ public class Reservation {
     private Integer id;
     private ReservationStatus status;
     private ReservationType type;
-    private Date reservationDateTime;
-    private ReservationAllocation allocation;
+    private Integer customer;
+    private Integer resource;
+    private Date dateTime;
 
     private Date statusModifiedAt;
     private String statusModifiedBy;

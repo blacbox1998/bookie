@@ -22,6 +22,7 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+CREATE SEQUENCE bookie.reservation_id_seq;
 
 CREATE TABLE bookie.address (
 	id numeric(10) NOT NULL UNIQUE,
@@ -77,21 +78,14 @@ CREATE TABLE bookie.reservation (
 	id numeric(10) NOT NULL UNIQUE,
 	status varchar(50) NOT NULL,
 	type varchar(50) NOT NULL,
-	reservationdatetime timestamp with time zone NOT NULL,
-	allocation numeric(10) NOT NULL,
+	customer numeric(10) NOT NULL,
+	resource numeric(10) NOT NULL,
+	datetime timestamp NOT NULL,
 	statusmodifiedat timestamp with time zone NOT NULL,
 	statusmodifiedby varchar(50) NOT NULL,
 	workingunit numeric(10) NOT NULL,
-	PRIMARY KEY (id)
-);
-
-CREATE TABLE bookie.reservationallocation (
-	id numeric(10) NOT NULL UNIQUE,
-	customer numeric(10) NOT NULL UNIQUE,
-	resource numeric(10) NOT NULL UNIQUE,
-	reservation numeric(10) NOT NULL UNIQUE,
 	PRIMARY KEY (id),
-	CONSTRAINT reservationallocation_ak1 UNIQUE (customer,resource,reservation)
+    CONSTRAINT reservation_ak1 UNIQUE (resource, datetime)
 );
 
 CREATE TABLE bookie.users (
@@ -117,9 +111,6 @@ ALTER TABLE bookie.resource ADD CONSTRAINT resource_fk3 FOREIGN KEY (workingunit
 ALTER TABLE bookie.reservation ADD CONSTRAINT reservation_fk1 FOREIGN KEY (status) REFERENCES bookie.reservationstatus(code);
 ALTER TABLE bookie.reservation ADD CONSTRAINT reservation_fk2 FOREIGN KEY (type) REFERENCES bookie.reservationtype(code);
 ALTER TABLE bookie.reservation ADD CONSTRAINT reservation_fk7 FOREIGN KEY (workingunit) REFERENCES bookie.workingunit(id);
-ALTER TABLE bookie.reservationallocation ADD CONSTRAINT reservationallocation_fk1 FOREIGN KEY (customer) REFERENCES bookie.customer(id);
-ALTER TABLE bookie.reservationallocation ADD CONSTRAINT reservationallocation_fk2 FOREIGN KEY (resource) REFERENCES bookie.resource(id);
-ALTER TABLE bookie.reservationallocation ADD CONSTRAINT reservationallocation_fk3 FOREIGN KEY (reservation) REFERENCES bookie.reservation(id);
+ALTER TABLE bookie.reservation ADD CONSTRAINT reservation_fk8 FOREIGN KEY (resource) REFERENCES bookie.resource(id);
+ALTER TABLE bookie.reservation ADD CONSTRAINT reservation_fk9 FOREIGN KEY (customer) REFERENCES bookie.customer(id);
 ALTER TABLE bookie.users ADD CONSTRAINT users_fk4 FOREIGN KEY (address) REFERENCES bookie.address(id);
-ALTER TABLE bookie.resourcereservationtype ADD CONSTRAINT resourcereservationtype_fk1 FOREIGN KEY (resource) REFERENCES bookie.resource(id);
-ALTER TABLE bookie.resourcereservationtype ADD CONSTRAINT resourcereservationtype_fk2 FOREIGN KEY (reservationtype) REFERENCES bookie.reservationtype(code);

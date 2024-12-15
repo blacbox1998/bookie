@@ -80,7 +80,7 @@
       <div class="inline flex flex-wrap align-items-center  justify-content-start w-full">
         <div v-for="calendarItemAllocation in calendarItemAllocations"
           class="mt-2 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
-          <div class="text-center border-round border-1 p-2"
+          <div class="text-center border-round border-1 p-2" @click="selectedTime = calendarItemAllocation.startedAt"
             v-bind:class="(calendarItemAllocation.busy ? 'surface-200 text-gray-400' : '')">{{ useDateFormat(calendarItemAllocation.startedAt,'HH:mm') }}</div>
         </div>
       </div>
@@ -93,13 +93,13 @@
 <Dialog v-model:visible="confirmDialogVisible" modal="true" class="w-full max-w-30rem">
   <template #header>
         <div class="inline-flex items-center justify-center gap-2">
-            <span class="font-bold whitespace-nowrap">{{'Potvrdi termin'}}</span>
+            <span class="font-bold whitespace-nowrap">{{useDateFormat(selectedTime,'HH:mm')}}</span>
         </div>
     </template>
   {{ 'Potvrda termina' }}
   <template #footer>
     <Button label="Otkaži" text severity="secondary"  class="text-indigo-500" @click="confirmDialogVisible = false" />
-    <Button label="Potvrdi" text severity="secondary" class="text-indigo-500" @click="confirmDialogVisible = false" />
+    <Button label="Potvrdi" text severity="secondary" class="text-indigo-500" @click="insertReservation" />
   </template>
 </Dialog>
 
@@ -127,6 +127,7 @@ const confirmDialogVisible = ref(false)
 
 const selectedService = ref();
 const selectedResource = ref();
+const selectedTime = ref();
 
 watch(selectedService,async (newValue,oldValue)=>{
 
@@ -154,7 +155,7 @@ async function showSidebar(resource){
     url: '/api/ResourceCalendarService/findResourceScheduleForDate',
     data: {
       date: selectedDate.value,
-      resource: 12,
+      resource: selectedResource.value.id,
       reservationType: selectedService.value
     }
   });
@@ -179,12 +180,29 @@ async function dateSelected(date) {
     url: '/api/ResourceCalendarService/findResourceScheduleForDate',
     data: {
       date: selectedDate.value.value,
-      resource: 12,
+      resource: selectedResource.value.id,
       reservationType: selectedService.value
     }
   });
   calendarItemAllocations.value = response.data;
 
+}
+
+async function insertReservation(){
+  const response = await axios({
+    method: 'post',
+    url: '/api/ReservationService/insert',
+    data: {
+      reservation: {
+        type: selectedService.value,
+        resource: selectedResource.value.id,
+        dateTime: selectedTime.value,
+        workingUnit: 1,
+        customer: 1
+      }
+    }
+  });
+  calendarItemAllocations.value = response.data;
 }
 
 function getMonthName(date) {
