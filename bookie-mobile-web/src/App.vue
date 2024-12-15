@@ -8,13 +8,13 @@
         </div>
       </div>
     </div>
-    <div v-if="selectedService" class="mt-6 flex ml-auto mr-auto max-w-30rem w-full justify-content-center">
-      <DataView :value="workers">
+    <div class="mt-6 flex ml-auto mr-auto max-w-30rem w-full justify-content-center">
+      <DataView v-show="selectedService" :value="workers">
         <template #list="slotProps">
           <div class="align-content-center">
             <div class="mb-6 block flex-wrap " v-for="(item, index) in slotProps.items" :key="index">
               <div class="block border-gray-300 flex flex-col sm:flex-row sm:items-center gap-3 pt-4" :style="{borderTop:'solid'}"
-                :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                :class="{ 'border-t border-surface-200 dark:border-surface-700': true }">
                 <div class="md:w-50 relative">
                   <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="large"
                     shape="circle" />
@@ -107,8 +107,9 @@
 
 </template>
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { WorkersService } from './services/WorkersService.js'
+import axios from 'axios';
 
 const listOfDates = ref(getListOfDatesInAWeek(new Date()));
 const currentMonth = ref(getMonthName(listOfDates.value[6].value));
@@ -138,7 +139,7 @@ const timeIntervals = ref([
   { label: '16:00' },
 ]);
 
-const workers = ref(WorkersService.getWorkersData());
+const workers = ref();
 
 const services = [
   'Šišanje',
@@ -150,6 +151,20 @@ const services = [
 const confirmDialogVisible = ref(false)
 
 const selectedService = ref();
+
+watch(selectedService,async (newValue,oldValue)=>{
+
+  const response = await axios({
+    method: 'post',
+    url: '/api/ResourceService/findByWorkingUnit',
+    data: {
+      workingUnit: 1
+    }
+  });
+  workers.value = response.data;
+  console.log(workers.value)
+
+});
 
 function dateSelected(date) {
   selectedDate.value = date
