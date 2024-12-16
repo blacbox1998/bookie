@@ -32,8 +32,14 @@ public class ResourceCalendarServiceImpl implements ResourceCalendarService {
             CalendarItemAllocation calendarItemAllocation = new CalendarItemAllocation();
             calendarItemAllocation.setStartedAt(dateToCheck);
 
+            Date intervalStart = new Date(dateToCheck.getTime() - 1000 * 60 * 2);
             Date intervalEnd = new Date(dateToCheck.getTime() + 1000L * 60 * reservationType.getDurationInMinutes());
-            calendarItemAllocation.setBusy(allAllocations.stream().anyMatch(allocation -> allocation.getDateTime().before(intervalEnd) && allocation.getDateTime().after(dateToCheck)));
+            calendarItemAllocation.setBusy(allAllocations.stream().anyMatch(allocation -> {
+                Date allocationStartDate = allocation.getDateTime();
+                Date allocationEndDate = new Date(allocation.getDateTime().getTime() + 1000L * 60 * allocation.getType().getDurationInMinutes());
+                return allocationStartDate.before(intervalEnd)
+                        && allocationEndDate.after(intervalStart);
+            }));
             result.add(calendarItemAllocation);
         }
 

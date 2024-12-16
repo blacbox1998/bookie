@@ -16,7 +16,7 @@ public class ReservationEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservationId")
-    @SequenceGenerator(name="reservationId", sequenceName = "reservation_id_seq")
+    @SequenceGenerator(name="reservationId", sequenceName = "reservation_id_seq", allocationSize = 1)
     private Integer id;
 
     @ManyToOne

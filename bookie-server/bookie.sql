@@ -22,7 +22,7 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
-CREATE SEQUENCE bookie.reservation_id_seq;
+CREATE SEQUENCE bookie.reservation_id_seq START 1;
 
 CREATE TABLE bookie.address (
 	id numeric(10) NOT NULL UNIQUE,
@@ -75,7 +75,7 @@ CREATE TABLE bookie.resource (
 );
 
 CREATE TABLE bookie.reservation (
-	id numeric(10) NOT NULL UNIQUE,
+	id numeric(10) PRIMARY KEY,
 	status varchar(50) NOT NULL,
 	type varchar(50) NOT NULL,
 	customer numeric(10) NOT NULL,
@@ -84,7 +84,6 @@ CREATE TABLE bookie.reservation (
 	statusmodifiedat timestamp with time zone NOT NULL,
 	statusmodifiedby varchar(50) NOT NULL,
 	workingunit numeric(10) NOT NULL,
-	PRIMARY KEY (id),
     CONSTRAINT reservation_ak1 UNIQUE (resource, datetime)
 );
 
