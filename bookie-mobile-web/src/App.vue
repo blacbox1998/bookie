@@ -1,56 +1,41 @@
 <template>
 
   <div class="w-full p-0 m-0">
-    <div class="flex mt-8 justify-items-center align-items-center flex-wrap p-fluid">
+    <div class="flex mt-4 justify-items-center align-items-center flex-wrap p-fluid">
       <div class="col">
-        <div class="ml-auto mr-auto field max-w-30rem align-content-center align-items-center w-full">
-          <label class="text-gray-500">{{ 'Izaberite uslugu' }}</label>
-          <Dropdown class="w-full max-w-30rem" :options="services" optionLabel="name" v-model="selectedService" showClear></Dropdown>
+        <div class="flex ml-auto mr-auto field justify-content-center align-items-center w-full">
+          <label class="text-gray-500 mr-3 font-bold">{{ 'Usluga' }}</label>
+          <Dropdown class="w-full  max-w-17rem" :options="services" optionLabel="name" v-model="selectedService" showClear>
+          </Dropdown>
         </div>
       </div>
     </div>
-    <div class="flex ml-auto mr-auto max-w-30rem w-full justify-content-center border-round-md">
-      <div class="card border-round-md">
-      <DataView v-show="selectedService" :value="workers" class="border-round-md">
-        <template #list="slotProps">
-          <div class="align-content-center border-round-md ">
-            <div class="mb-3 block flex-wrap " v-for="(item, index) in slotProps.items" :key="index">
-              <div class="block border-gray-300 flex flex-col sm:flex-row sm:items-center gap-3 pt-3 pl-4 pr-4" :style="{ borderTop:'solid'}"
-                :class="{ 'border-t border-surface-200 dark:border-surface-700': index!==0 }">
-                <div class="md:w-50 relative">
-                  <Avatar icon="pi pi-user" class="ml-auto  text-indigo-500 mr-auto mr-2" size="large"
-                    shape="circle" />
-                </div>
-                <div class="md:w-50 relative ">
-                  <div class="absolute bg-black/70 rounded-border" style="left: 4px; top: 4px">
-                  </div>
-                </div>
-                <div class="flex flex-wrap flex-col md:flex-row justify-between md:items-center flex-1 gap-2">
-                  <div class="flex flex-row md:flex-col justify-between items-start gap-2">
-                    <div class="w-8rem ">
-                      <div class="font-medium mt-2">{{ item.resource.name }}</div>
-                      <span class="font-semibold">{{ item.price +'din'}}</span>
-                    </div>
-                  </div>
-                  <div class="flex flex-col gap-2">
-                    <div class="flex  md:flex-row gap-2">
-                      <Button icon="pi pi-calendar-clock" label="Book" @click="showSidebar(item.resource)"
-                        class="h-3rem p-button-sm flex-auto md:flex-initial whitespace-nowrap"></Button>
-                    </div>
-                  </div>
+    <BlockUI :blocked="resourcesLoading" class=" flex justify-content-center align-items-center ml-auto mr-auto">
+      <div class="scrolling-wrapper scrolling-wrapper-flexbox" :style="{height:'70vh'}" v-if="workers">
+        <div v-for="worker in workers.concat(workers).concat(workers)">
+          <Card @click="showSidebar(worker.resource)" 
+          class="h-10rem w-20rem shadow-5 mt-1 cursor-pointer border-indigo-500 border-2 border-round-md">
+            <template #subtitle>
+              <span class="font-bold">{{ worker.resource.name }}</span>
+            </template>
+            <template #content>
+              <div class="flex flex-row items-start gap-2">
+                <img src="/images/picture-barber.png" width="100" />
+                <div class="col">
+                  <span class="font-semibold">{{ worker.price + 'din' }}</span>
                 </div>
               </div>
-            </div>
-          </div>
-        </template>
-      </DataView>
-    </div>
-    </div>
+            </template>
+          </Card>
+        </div>
+
+      </div>
+    </BlockUI>
   </div>
   <Sidebar v-model:visible="sidebarVisible" position="right" class="w-full max-w-30rem bg-gray-200">
-      <div class="w-full flex p-fluid flex-column formgrid grid">
-          <label class="ml-auto mr-auto text-2xl font-bold">{{ selectedResource.name }}</label>
-      </div>
+    <div class="w-full flex p-fluid flex-column formgrid grid">
+      <label class="ml-auto mr-auto text-2xl font-bold">{{ selectedResource.name }}</label>
+    </div>
     <Panel class="mt-3">
       <template #header>
         <div class="flex-wrap flex align-items-stretch w-full">
@@ -69,13 +54,15 @@
             <div class="flex-wrap flex align-items-stretch align-items-center mt-2">
               <div v-for="date in listOfDates" @click="dateSelected(date)" :style="{ width: '13%' }"
                 class="cursor-pointer ml-auto align-items-center  flex date hover:surface-200 font-bold flex align-self-stretch flex-column mr-auto">
-                <div v-if="date.value.getTime()/1000==selectedDate.value.getTime()/1000" class="bg-primary shadow-4 p-1 border-round mb-1">
+                <div v-if="date.value.getTime() / 1000 == selectedDate.value.getTime() / 1000"
+                  class="bg-primary shadow-5 p-1 border-round mb-1">
                   <div class="font-bold text-center p-2 ">{{ date.dayName }}</div>
-                  <div  class="font-bold text-center mb-1">{{ date.dayInMonth }}</div>
+                  <div class="font-bold text-center mb-1">{{ date.dayInMonth }}</div>
                 </div>
-                <div v-if="date.value.getTime()/1000!=selectedDate.value.getTime()/1000"class="p-1 border-round mb-2" >
-                  <div  class="font-bold text-center border-round p-2">{{ date.dayName }}</div>
-                    <div class="font-bold text-center border-round ">{{ date.dayInMonth }}</div>
+                <div v-if="date.value.getTime() / 1000 != selectedDate.value.getTime() / 1000"
+                  class="p-1 border-round mb-2">
+                  <div class="font-bold text-center border-round p-2">{{ date.dayName }}</div>
+                  <div class="font-bold text-center border-round ">{{ date.dayInMonth }}</div>
                 </div>
               </div>
             </div>
@@ -83,30 +70,31 @@
         </div>
       </template>
       <BlockUI :blocked="scheduleLoading">
-      <div class="inline flex flex-wrap align-items-center  justify-content-start w-full border-round">
-        <div v-for="calendarItemAllocation in calendarItemAllocations"
-          class="mt-2 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
-          <div class="text-center border-round border-1 p-2" @click="selectedTime = calendarItemAllocation.startedAt"
-            v-bind:class="(calendarItemAllocation.busy ? 'surface-200 text-gray-400' : '')">{{ useDateFormat(calendarItemAllocation.startedAt,'HH:mm') }}</div>
+        <div class="inline flex flex-wrap align-items-center  justify-content-start w-full border-round">
+          <div v-for="calendarItemAllocation in calendarItemAllocations"
+            class="mt-2 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
+            <div class="text-center border-round border-1 p-2" @click="selectedTime = calendarItemAllocation.startedAt"
+              v-bind:class="(calendarItemAllocation.busy ? 'surface-200 text-gray-400' : '')">{{
+                useDateFormat(calendarItemAllocation.startedAt, 'HH:mm') }}</div>
+          </div>
         </div>
-      </div>
-    </BlockUI>
+      </BlockUI>
     </Panel>
-    <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'" @click="confirmDialogVisible=true"></Button>
+    <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'" @click="confirmDialogVisible = true"></Button>
   </Sidebar>
 
-<Dialog v-model:visible="confirmDialogVisible" modal="true" class="w-full max-w-30rem">
-  <template #header>
-        <div class="inline-flex items-center justify-center gap-2">
-            <span class="font-bold whitespace-nowrap">{{useDateFormat(selectedTime,'HH:mm')}}</span>
-        </div>
+  <Dialog v-model:visible="confirmDialogVisible" modal="true" class="w-full max-w-30rem">
+    <template #header>
+      <div class="inline-flex items-center justify-center gap-2">
+        <span class="font-bold whitespace-nowrap">{{ useDateFormat(selectedTime, 'HH:mm') }}</span>
+      </div>
     </template>
-  {{ 'Potvrda termina' }}
-  <template #footer>
-    <Button label="Otkaži" text severity="secondary"  class="text-indigo-500" @click="confirmDialogVisible = false" />
-    <Button label="Potvrdi" text severity="secondary" class="text-indigo-500" @click="insertReservation" />
-  </template>
-</Dialog>
+    {{ 'Potvrda termina' }}
+    <template #footer>
+      <Button label="Otkaži" text severity="secondary" class="text-indigo-500" @click="confirmDialogVisible = false" />
+      <Button label="Potvrdi" text severity="secondary" class="text-indigo-500" @click="insertReservation" />
+    </template>
+  </Dialog>
 
 
 </template>
@@ -134,11 +122,12 @@ const services = ref();
 const confirmDialogVisible = ref(false)
 
 const selectedService = ref();
+const resourcesLoading = ref(false);
 const selectedResource = ref();
 const selectedTime = ref();
 
-watch(selectedService,async (newValue,oldValue)=>{
-
+watch(selectedService, async (newValue, oldValue) => {
+  resourcesLoading.value = true;
   const response = await axios({
     method: 'post',
     url: '/api/ResourceService/findOptionsByWorkingUnitAndType',
@@ -148,12 +137,14 @@ watch(selectedService,async (newValue,oldValue)=>{
     }
   });
   workers.value = response.data;
+  resourcesLoading.value = false;
 });
 
-async function showSidebar(resource){
+async function showSidebar(resource) {
   sidebarVisible.value = true
   selectedResource.value = resource;
-  selectedDate.value = listOfDates.value.filter(date => date.value.getDay()===new Date().getDay())[0]
+  scheduleLoading.value = true;
+  selectedDate.value = listOfDates.value.filter(date => date.value.getDay() === new Date().getDay())[0]
   const response = await axios({
     method: 'post',
     url: '/api/ResourceCalendarService/findResourceScheduleForDate',
@@ -164,9 +155,10 @@ async function showSidebar(resource){
     }
   });
   calendarItemAllocations.value = response.data;
+  scheduleLoading.value = false;
 }
 
-onMounted(async ()=>{
+onMounted(async () => {
 
   const response = await axios({
     method: 'post',
@@ -196,7 +188,7 @@ async function dateSelected(date) {
 
 }
 
-async function insertReservation(){
+async function insertReservation() {
   const response = await axios({
     method: 'post',
     url: '/api/ReservationService/insert',
@@ -228,7 +220,7 @@ function nextWeek() {
   var targetDate = new Date(listOfDates.value[6].value.getTime() + 1000 * 60 * 60 * 26);
   listOfDates.value = getListOfDatesInAWeek(targetDate);
   currentMonth.value = getMonthName(listOfDates.value[6].value);
-  currentYear.value = getYear(listOfDates.value[6].value) ;
+  currentYear.value = getYear(listOfDates.value[6].value);
 }
 
 function previousWeek() {
@@ -236,7 +228,7 @@ function previousWeek() {
   console.log(targetDate)
   listOfDates.value = getListOfDatesInAWeek(targetDate);
   currentMonth.value = getMonthName(listOfDates.value[6].value);
-  currentYear.value = getYear(listOfDates.value[6].value) ;
+  currentYear.value = getYear(listOfDates.value[6].value);
 }
 
 function getListOfDatesInAWeek(date) {
@@ -278,5 +270,25 @@ function firstLetterToUpper(text) {
 <style scoped>
 body {
   margin: 0;
+}
+
+.scrolling-wrapper-flexbox {
+  /* display: flex; */
+  flex-wrap: nowrap;
+  overflow-y: auto;
+
+  .card {
+    flex: 0 0 auto;
+  }
+}
+
+.scrolling-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrolling-wrapper {
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 </style>
