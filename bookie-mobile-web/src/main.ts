@@ -10,6 +10,8 @@ import DataView from 'primevue/dataview';
 import AutoComplete from 'primevue/autocomplete';
 import Dropdown from 'primevue/dropdown';
 import Dialog from 'primevue/dialog';
+import ToastService from 'primevue/toastservice';
+import BlockUI from 'primevue/blockui';
 import 'primeicons/primeicons.css';
 import '/node_modules/primeflex/primeflex.css';
 import 'primevue/resources/themes/lara-light-indigo/theme.css';
@@ -26,5 +28,7 @@ app.component('DataView', DataView);
 app.component('AutoComplete', AutoComplete);
 app.component('Dropdown', Dropdown);
 app.component('Dialog', Dialog);
+app.component('BlockUI', BlockUI)
 app.use(PrimeVue);
+app.use(ToastService);
 app.mount('#app');

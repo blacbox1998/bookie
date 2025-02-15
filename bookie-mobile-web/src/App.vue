@@ -66,26 +66,31 @@
               </div>
             </div>
 
-
             <div class="flex-wrap flex align-items-stretch align-items-center mt-2">
               <div v-for="date in listOfDates" @click="dateSelected(date)" :style="{ width: '13%' }"
-                class="ml-auto align-items-center  flex mt-1 mb-1 date hover:surface-200 font-bold flex align-self-stretch border-round flex-column mr-auto">
-                <div class="font-bold text-center border-round p-2">{{ date.dayName }}</div>
-                <div class="font-bold text-center border-round ">{{ date.dayInMonth }}</div>
+                class="cursor-pointer ml-auto align-items-center  flex date hover:surface-200 font-bold flex align-self-stretch flex-column mr-auto">
+                <div v-if="date.value.getTime()/1000==selectedDate.value.getTime()/1000" class="bg-primary shadow-4 p-1 border-round mb-1">
+                  <div class="font-bold text-center p-2 ">{{ date.dayName }}</div>
+                  <div  class="font-bold text-center mb-1">{{ date.dayInMonth }}</div>
+                </div>
+                <div v-if="date.value.getTime()/1000!=selectedDate.value.getTime()/1000"class="p-1 border-round mb-2" >
+                  <div  class="font-bold text-center border-round p-2">{{ date.dayName }}</div>
+                    <div class="font-bold text-center border-round ">{{ date.dayInMonth }}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </template>
-      <div class="inline flex flex-wrap align-items-center  justify-content-start w-full">
+      <BlockUI :blocked="scheduleLoading">
+      <div class="inline flex flex-wrap align-items-center  justify-content-start w-full border-round">
         <div v-for="calendarItemAllocation in calendarItemAllocations"
           class="mt-2 w-4rem date hover:surface-200 flex align-items-center justify-content-center border-round flex-column ml-5">
           <div class="text-center border-round border-1 p-2" @click="selectedTime = calendarItemAllocation.startedAt"
             v-bind:class="(calendarItemAllocation.busy ? 'surface-200 text-gray-400' : '')">{{ useDateFormat(calendarItemAllocation.startedAt,'HH:mm') }}</div>
         </div>
       </div>
-
-
+    </BlockUI>
     </Panel>
     <Button class="w-full border-round bg-indigo-500" :label="'Zakazi'" @click="confirmDialogVisible=true"></Button>
   </Sidebar>
@@ -109,6 +114,9 @@
 import { onMounted, ref, watch } from 'vue';
 import axios from 'axios';
 import { useDateFormat } from '@vueuse/core';
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 
 const listOfDates = ref(getListOfDatesInAWeek(new Date()));
 const currentMonth = ref(getMonthName(listOfDates.value[6].value));
@@ -145,16 +153,12 @@ watch(selectedService,async (newValue,oldValue)=>{
 async function showSidebar(resource){
   sidebarVisible.value = true
   selectedResource.value = resource;
-  selectedDate.value = new Date();
-  selectedDate.value.setHours(0)
-  selectedDate.value.setMinutes(0);
-  selectedDate.value.setSeconds(0);
-  selectedDate.value.setMilliseconds(1);
+  selectedDate.value = listOfDates.value.filter(date => date.value.getDay()===new Date().getDay())[0]
   const response = await axios({
     method: 'post',
     url: '/api/ResourceCalendarService/findResourceScheduleForDate',
     data: {
-      date: selectedDate.value,
+      date: selectedDate.value.value,
       resource: selectedResource.value.id,
       reservationType: selectedService.value
     }
@@ -172,9 +176,12 @@ onMounted(async ()=>{
   services.value = response.data;
 })
 
+const scheduleLoading = ref(false)
 async function dateSelected(date) {
-  selectedDate.value = date
+  selectedDate.value = date;
 
+  scheduleLoading.value = true;
+  console.log(selectedDate.value)
   const response = await axios({
     method: 'post',
     url: '/api/ResourceCalendarService/findResourceScheduleForDate',
@@ -184,6 +191,7 @@ async function dateSelected(date) {
       reservationType: selectedService.value
     }
   });
+  scheduleLoading.value = false;
   calendarItemAllocations.value = response.data;
 
 }
@@ -202,6 +210,9 @@ async function insertReservation(){
       }
     }
   });
+  toast.add("Succees")
+  confirmDialogVisible.value = false;
+  dateSelected(selectedTime.value)
   calendarItemAllocations.value = response.data;
 }
 
