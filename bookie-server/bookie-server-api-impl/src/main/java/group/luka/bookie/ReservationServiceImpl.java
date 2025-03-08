@@ -33,8 +33,4 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationMapper.entityToModel(entity);
     }
 
-    @Override
-    public String getRawpServiceName() {
-        return "ReservationService";
-    }
 }

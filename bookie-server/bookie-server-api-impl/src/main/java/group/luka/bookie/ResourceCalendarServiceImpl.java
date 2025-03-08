@@ -26,16 +26,16 @@ public class ResourceCalendarServiceImpl implements ResourceCalendarService {
         List<ReservationEntity> allAllocations = repository.findByResourceAndDateTimeBetween(resource, date, endDate);
 
         List<CalendarItemAllocation> result = new ArrayList<>();
-        List<Date> dates = generatePeriodsForDate(date);
+        List<Date> dates = generatePeriodsForDate(date, reservationType.getDurationInMinutes());
 
         for (Date dateToCheck : dates) {
             CalendarItemAllocation calendarItemAllocation = new CalendarItemAllocation();
             calendarItemAllocation.setStartedAt(dateToCheck);
 
-            Date intervalStart = new Date(dateToCheck.getTime() - 1000 * 60 * 2);
-            Date intervalEnd = new Date(dateToCheck.getTime() + 1000L * 60 * reservationType.getDurationInMinutes());
+            Date intervalStart = new Date(dateToCheck.getTime() - 1000 * 60 * 2+1000*60*5);
+            Date intervalEnd = new Date(dateToCheck.getTime() + 1000L * 60 * reservationType.getDurationInMinutes()-1000*60*5);
             calendarItemAllocation.setBusy(allAllocations.stream().anyMatch(allocation -> {
-                Date allocationStartDate = allocation.getDateTime();
+                Date allocationStartDate = new Date(allocation.getDateTime().getTime());
                 Date allocationEndDate = new Date(allocation.getDateTime().getTime() + 1000L * 60 * allocation.getType().getDurationInMinutes());
                 return allocationStartDate.before(intervalEnd)
                         && allocationEndDate.after(intervalStart);
@@ -46,7 +46,7 @@ public class ResourceCalendarServiceImpl implements ResourceCalendarService {
         return result;
     }
 
-    private List<Date> generatePeriodsForDate(Date date) {
+    private List<Date> generatePeriodsForDate(Date date, Integer intervalLengthInMinutes) {
         List<Date> dates = new ArrayList<>();
 
         //08:00
@@ -56,15 +56,10 @@ public class ResourceCalendarServiceImpl implements ResourceCalendarService {
         Date tempDate = new Date(workingDayStart.getTime());
         while (tempDate.before(workingDayEnd)) {
             dates.add(tempDate);
-            tempDate = new Date(tempDate.getTime() + 1000L * 60 * 15);
+            tempDate = new Date(tempDate.getTime() + 1000L * 60 * intervalLengthInMinutes);
         }
 
         return dates;
-    }
-
-    @Override
-    public String getRawpServiceName() {
-        return "ResourceCalendarService";
     }
 
 }

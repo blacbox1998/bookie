@@ -31,8 +31,4 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public String getRawpServiceName() {
-        return "UserService";
-    }
 }

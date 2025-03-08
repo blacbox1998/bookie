@@ -20,8 +20,4 @@ public class ReservationStatusServiceImpl implements ReservationStatusService {
         return reservationStatusMapper.entityToModel(reservationStatusRepository.findById(code).get());
     }
 
-    @Override
-    public String getRawpServiceName() {
-        return "ReservationStatusService";
-    }
 }

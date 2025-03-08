@@ -25,7 +25,16 @@ public class ReservationTypeServiceImpl implements ReservationTypeService {
     }
 
     @Override
-    public String getRawpServiceName() {
-        return "ReservationTypeService";
+    public ReservationType save(ReservationType reservationType) {
+        ReservationTypeEntity entity = mapper.modelToEntity(reservationType);
+        reservationTypeRepository.save(entity);
+        return mapper.entityToModel(entity);
     }
+
+    @Override
+    public void delete(ReservationType reservationType) {
+        ReservationTypeEntity entity = mapper.modelToEntity(reservationType);
+        reservationTypeRepository.delete(entity);
+    }
+
 }

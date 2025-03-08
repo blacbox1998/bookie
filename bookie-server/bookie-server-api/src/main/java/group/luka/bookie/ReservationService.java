@@ -7,4 +7,8 @@ public interface ReservationService extends RawpServiceComponent {
 
     Reservation insert(Reservation reservation);
 
+    @Override
+    default String getRawpServiceName(){
+        return "ReservationService";
+    }
 }

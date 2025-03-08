@@ -15,5 +15,8 @@ public interface UserService extends RawpServiceComponent {
 
     void delete(User user);
 
-
+    @Override
+    default String getRawpServiceName(){
+        return "UserService";
+    }
 }

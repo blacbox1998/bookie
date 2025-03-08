@@ -13,10 +13,12 @@ import Dialog from 'primevue/dialog';
 import ToastService from 'primevue/toastservice';
 import BlockUI from 'primevue/blockui';
 import Card from 'primevue/card';
+import Fieldset from 'primevue/fieldset';
 import 'primeicons/primeicons.css';
 import '/node_modules/primeflex/primeflex.css';
 import 'primevue/resources/themes/lara-light-indigo/theme.css';
 import 'primevue/resources/primevue.min.css';
+import Toast from 'primevue/toast';
 
 const app = createApp(App);
 
@@ -31,6 +33,8 @@ app.component('Dropdown', Dropdown);
 app.component('Dialog', Dialog);
 app.component('BlockUI', BlockUI);
 app.component('Card', Card);
+app.component('FieldSet', Fieldset);
+app.component('Toast', Toast);
 app.use(PrimeVue);
 app.use(ToastService);
 app.mount('#app');

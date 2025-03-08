@@ -1,13 +1,17 @@
 package group.luka.bookie;
 
+import group.luka.bookie.entity.ResourceEntity;
+import group.luka.bookie.entity.ResourceReservationTypeEntity;
 import group.luka.bookie.mapper.ResourceMapper;
 import group.luka.bookie.mapper.ResourceReservationTypeMapper;
 import group.luka.bookie.model.ReservationType;
+import group.luka.bookie.model.Resource;
 import group.luka.bookie.model.ResourceReservationType;
 import group.luka.bookie.repo.ResourceRepository;
 import group.luka.bookie.repo.ResourceReservationTypeRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -29,7 +33,16 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
-    public String getRawpServiceName() {
-        return "ResourceService";
+    public Resource save(Resource resource) {
+        ResourceEntity resourceEntity = mapper.modelToEntity(resource);
+        repository.save(resourceEntity);
+        return mapper.entityToModel(resourceEntity);
     }
+
+    @Override
+    public ResourceReservationType saveResourceReservationType(Resource resource, String reservationType, BigDecimal price) {
+        ResourceReservationTypeEntity resourceReservationTypeEntity = new ResourceReservationTypeEntity();
+        return null;
+    }
+
 }

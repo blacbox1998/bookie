@@ -7,4 +7,8 @@ public interface ReservationStatusService extends RawpServiceComponent {
 
     ReservationStatus findByCode(String code);
 
+    @Override
+    default String getRawpServiceName() {
+        return "ReservationStatusService";
+    }
 }

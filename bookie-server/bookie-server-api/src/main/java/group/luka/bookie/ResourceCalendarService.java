@@ -11,4 +11,8 @@ public interface ResourceCalendarService extends RawpServiceComponent {
 
     List<CalendarItemAllocation> findResourceScheduleForDate(Date date, Integer resource, ReservationType reservationType);
 
+    @Override
+    default String getRawpServiceName(){
+        return "ResourceCalendarService";
+    }
 }
